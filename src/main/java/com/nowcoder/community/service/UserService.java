@@ -43,11 +43,7 @@ public class UserService implements CommunityConstant {
 
     }
 
-    //个人设置修改密码功能
-    public void updatePassword(User user){
-        Map<String,Object> map =new HashMap<>();
 
-    }
 
 
 
@@ -81,6 +77,9 @@ public class UserService implements CommunityConstant {
         u = userMapper.selectByEmail(user.getEmail());
         if(u!=null){
             map.put("emailMsg","该邮箱已被注册");
+
+
+
             return map;
         }
         //上述验证都通过，可以进行用户注册
@@ -188,9 +187,31 @@ public class UserService implements CommunityConstant {
         return loginTicketMapper.selectByTicker(ticket);
     }
 
+
+
+
+
     //更新用户头像.传入用户ID和头像新的路径，更新
     public int updateHeader(int userId,String headerUrl){
         return userMapper.updateHeader(userId,headerUrl);
     }
+
+    //个人设置修改密码功能
+    public Map<String,Object> updatePassword(String password,String newPassword,int id){
+        Map<String,Object> map =new HashMap<>();
+        User user = userMapper.selectByID(id);
+        password= CommunityUtil.md5(password+user.getSalt());
+        if(!user.getPassword().equals(password)){
+            map.put("passwordMsg","输入密码错误！");
+            return map;
+        }
+        else {
+            newPassword= CommunityUtil.md5(newPassword+user.getSalt());
+            userMapper.updatePassword(id,newPassword);
+        }
+
+        return map;
+    }
+
 }
 

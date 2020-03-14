@@ -72,6 +72,9 @@ public class LoginController implements CommunityConstant {
         }
     }
 
+
+
+
     //激活页面
     //  http://localhost:8004/4399/activation/用户ID/激活码
     @RequestMapping(path = "/activation/{userId}/{code}", method = RequestMethod.GET)

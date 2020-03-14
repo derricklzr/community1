@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
@@ -46,6 +47,73 @@ public class UserController {
     @RequestMapping(path = "/setting",method = RequestMethod.GET)
     public String getSettingPage(){
         return "/site/setting";
+    }
+
+
+
+    //获取头像
+    @RequestMapping(path = "/header/{fileName}",method = RequestMethod.GET)
+    public void getHeader(@PathVariable("fileName") String fileName, HttpServletResponse response){
+        //找服务器存放头像位置
+        fileName = uploadPath+"/"+fileName;
+        //输出html，先解析后缀
+        String suffix = fileName.substring(fileName.lastIndexOf("."));
+        //设置图片格式类型
+        response.setContentType("image/"+suffix);
+        //输出图片
+        try (
+                FileInputStream fis = new FileInputStream(fileName);//输入到这个文件
+                OutputStream os = response.getOutputStream();//输出的位置
+
+                ){
+
+            //输出缓冲限速
+            byte[] buffer = new byte[1024];//每次1024字节数据
+            int b=0;
+            while((b=fis.read(buffer))!=-1){//表示读到数据
+                os.write(buffer,0,b);
+
+            }
+        } catch (IOException e) {
+            logger.error("读取头像失败"+e.getMessage());
+        }
+
+    }
+    //个人设置页面修改密码功能
+    //这里形参用Model类和User类即可，SpringMVC会把传入内容按照User属性填入user
+    @RequestMapping(path = "/setting", method = RequestMethod.POST)
+    public String updatePassword(Model model, String password,String newPassword,String confirmPassword) {
+       if(StringUtils.isBlank(password)){
+           model.addAttribute("passwordMsg","请输入原始密码！");
+           return "/site/setting";
+       }
+        if(StringUtils.isBlank(newPassword)){
+            model.addAttribute("newPasswordMsg","请输入新密码！");
+            return "/site/setting";
+        }
+        if(StringUtils.isBlank(confirmPassword)){
+            model.addAttribute("confirmPasswordMsg","请再次输入新密码！");
+            return "/site/setting";
+        }
+        if(!confirmPassword.equals(newPassword)){
+            model.addAttribute("newPasswordMsg","两次输入的新密码不相同！");
+            return "/site/setting";
+        }
+        User user=hostHolder.getUser();
+        Map<String, Object> map = userService.updatePassword(password,newPassword,user.getId());
+        if (map == null || map.isEmpty()) {
+            //传给templates改密码成功
+            model.addAttribute("msg", "密码修改成功");
+            //跳到个人设置面
+            model.addAttribute("target", "/user/setting");
+            return "/site/operate-result";
+        }else {
+            //失败了传失败信息，跳到到原来的页面
+            model.addAttribute("passwordMsg","输入的原始密码错误！");
+            return "/site/setting";
+        }
+
+
     }
 
     @RequestMapping(path="/upload",method = RequestMethod.POST)
@@ -81,35 +149,11 @@ public class UserController {
         User user=hostHolder.getUser();
         String headerUrl = domain+contextPath+"/user/header/"+fileName;
         userService.updateHeader(user.getId(),headerUrl);
-        return "redirect:/index";
+        //传给templates改密码成功
+        model.addAttribute("msg", "头像修改成功");
+        //跳到个人设置面
+        model.addAttribute("target", "/user/setting");
+        return "/site/operate-result";
     }
 
-    //获取头像
-    @RequestMapping(path = "/header/{fileName}",method = RequestMethod.GET)
-    public void getHeader(@PathVariable("fileName") String fileName, HttpServletResponse response){
-        //找服务器存放头像位置
-        fileName = uploadPath+"/"+fileName;
-        //输出html，先解析后缀
-        String suffix = fileName.substring(fileName.lastIndexOf("."));
-        //设置图片格式类型
-        response.setContentType("image/"+suffix);
-        //输出图片
-        try (
-                FileInputStream fis = new FileInputStream(fileName);//输入到这个文件
-                OutputStream os = response.getOutputStream();//输出的位置
-
-                ){
-
-            //输出缓冲限速
-            byte[] buffer = new byte[1024];//每次1024字节数据
-            int b=0;
-            while((b=fis.read(buffer))!=-1){//表示读到数据
-                os.write(buffer,0,b);
-
-            }
-        } catch (IOException e) {
-            logger.error("读取头像失败"+e.getMessage());
-        }
-
-    }
 }

@@ -13,7 +13,15 @@ public class User {
     private String activationCode;
     private String headerUrl;
     private Date createTime;
+    private String newPassword;
 
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
 
     public int getId() {
         return id;
@@ -108,6 +116,7 @@ public class User {
                 ", activationCode='" + activationCode + '\'' +
                 ", headerUrl='" + headerUrl + '\'' +
                 ", createTime=" + createTime +
+                ", newPassword='" + newPassword + '\'' +
                 '}';
     }
 }

@@ -78,7 +78,9 @@
 					<div class="form-group row mt-4">
 						<label for="password" class="col-sm-2 col-form-label text-right">密码:</label>
 						<div class="col-sm-10">
-							<input type="password" th:class="|form-control ${passwordMsg!=null?'is-invalid':'' }|" id="password"
+							<input type="password"
+								   th:class="|form-control ${passwordMsg!=null?'is-invalid':'' }|"
+								   id="password"
 								   th:value="${param.password}"
 								   name = "password" placeholder="请输入您的密码!" required>
 							<div class="invalid-feedback" th:text="${passwordMsg}">
