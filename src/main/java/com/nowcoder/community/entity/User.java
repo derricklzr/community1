@@ -14,6 +14,7 @@ public class User {
     private String headerUrl;
     private Date createTime;
 
+
     public int getId() {
         return id;
     }

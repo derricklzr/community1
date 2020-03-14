@@ -1,7 +1,10 @@
 package com.nowcoder.community.service;
 
 import com.nowcoder.community.dao.DiscussPostMapper;
+import com.nowcoder.community.dao.LoginTicketMapper;
 import com.nowcoder.community.dao.UserMapper;
+import com.nowcoder.community.entity.CommunityConstant;
+import com.nowcoder.community.entity.LoginTicket;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.MailClient;
@@ -19,16 +22,18 @@ import java.util.Map;
 import java.util.Random;
 
 @Service
-public class UserService {
+public class UserService implements CommunityConstant {
     @Autowired
     public UserMapper userMapper;
     @Autowired
     private MailClient mailClient;
     @Autowired
     private TemplateEngine templateEngine;
-    @Value("$(community.path.domain)")
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
+    @Value("${community.path.domain}")
     private String domain;  //注入域名
-    @Value("$(server.servlet.context-path)")
+    @Value("${server.servlet.context-path}")
     private String contextPath;//注入项目名
 
 
@@ -37,6 +42,14 @@ public class UserService {
 
 
     }
+
+    //个人设置修改密码功能
+    public void updatePassword(User user){
+        Map<String,Object> map =new HashMap<>();
+
+    }
+
+
 
     //注册功能包括了空账号异常，
     //以及提交表单时用户名，密码，邮箱为空时用map对象打包错误信息返回提示浏览器
@@ -91,7 +104,7 @@ public class UserService {
         Context context = new Context();
         //在context中注入了要发送给用户的邮件并命名为email
         context.setVariable("email",user.getEmail());
-        //设置激活的url,服务器用这个url处理激活请求。http://localhost:8004/4399/activation/用户ID/激活码
+        //设置激活的url,服务器用这个url处理激活请求。http:localhost:8004/4399/用户ID/激活码
         String url = domain + contextPath+"/activation/"+user.getId()+"/"+user.getActivationCode(); //domain域名+contextPath项目名+固定字符串+用户id+激活码
         context.setVariable("url",url);
         //利用模板引擎生成HTML邮件内容
@@ -105,6 +118,79 @@ public class UserService {
         return map;
     }
 
+    //激活方法，包括判断了是否激活，重复激活，激活失败。并在为激活+激活码正确情况下激活用户
+    //返回激活状态
+    public int activation(int userId,String code){
+        User user=userMapper.selectByID(userId);
+        if(user.getStatus()==1)//用户已激活过了
+        {
+            return ACTIVATION_REPEAT;
+        }
+        //如果验证码确认无误
+        else if(user.getActivationCode().equals(code)){
+            userMapper.updateStatus(userId,1);
+            return ACTIVATION_SUCCESS;
+        }
+        else{
+            return ACTIVATION_FAILURE;
+        }
+    }
 
+    //由于登录的时候，失败的原因有多个：
+    //因此设置map对象打包错误信息返回给controller给浏览器
+    public Map<String,Object> login(String username,String password,int expiredSeconds)
+    {//返回类型map带错误信息，形参为用户名，密码和登录凭证还有几秒过期
+        Map<String,Object> map = new HashMap<>();
+        //用户名和密码为空判断
+        if(StringUtils.isBlank(username)){
+            map.put("usernameMsg","账号为空！");
+            return map;
+        }
+        if(StringUtils.isBlank(password)){
+            map.put("passwordMsg","密码为空！");
+            return map;
+        }
+        //验证用户名是否存在
+        User user = userMapper.selectByName(username);
+        if(user==null){
+            map.put("usernameMsg","账号不存在！");
+            return map;
+        }
+        //验证账户是否激活
+        if(user.getStatus()==0){
+            map.put("usernameMsg","账号未激活！");
+            return map;
+        }
+        //验证密码
+        password= CommunityUtil.md5(password+user.getSalt());
+        if(!user.getPassword().equals(password)){
+            map.put("passwordMsg","输入密码错误！");
+            return map;
+        }
+        //执行到此，登录成功
+
+        //生成登录凭证，表示在线.实际为生成了一行LoginTicket表数据
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(user.getId());
+        loginTicket.setTicket(CommunityUtil.generateUID());
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis()+expiredSeconds*1000));
+        loginTicketMapper.insertLoginTicket(loginTicket);
+        //给服务器发登录凭证，以便给浏览器cookie保存
+        map.put("ticket",loginTicket.getTicket());
+        return map;
+    }
+    public void logout(String ticket){
+        loginTicketMapper.updateStatus(ticket,1);
+    }
+    //通过ticket找login ticket
+    public LoginTicket findLoginTicket(String ticket){
+        return loginTicketMapper.selectByTicker(ticket);
+    }
+
+    //更新用户头像.传入用户ID和头像新的路径，更新
+    public int updateHeader(int userId,String headerUrl){
+        return userMapper.updateHeader(userId,headerUrl);
+    }
 }
 

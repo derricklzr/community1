@@ -1,14 +1,17 @@
 package com.nowcoder.community.controller;
 
 import com.nowcoder.community.service.AlphaService;
+import com.nowcoder.community.util.CommunityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -125,5 +128,40 @@ public class AlphaController {
         emp.put("height","18");
         list.add(emp);
         return list;
+    }
+    @RequestMapping(path="/cookie/set",method=RequestMethod.GET)
+    @ResponseBody//下面参数为httpServletResponse，由于响应要带上cookie
+    public String setCookie(HttpServletResponse response){
+        //新建cookie
+        Cookie cookie = new Cookie("code", CommunityUtil.generateUID());
+        //cookie有效的范围
+        cookie.setPath("/4399/alpha");
+        //设置cookie生存时间
+        cookie.setMaxAge(60*10);
+        //把cookie搞进response
+        response.addCookie(cookie);
+        return "你cookie有了";
+    }
+    @RequestMapping(path="/cookie/get",method=RequestMethod.GET)
+    @ResponseBody//下面参数为httpServletResponse，由于响应要带上cookie
+    public String getCookie(@CookieValue("code") String code){
+       System.out.println(code);
+        return "getCookie";
+    }
+    //session
+    @RequestMapping(path="/session/set",method=RequestMethod.GET)
+    @ResponseBody//下面参数为httpServletResponse，由于响应要带上cookie
+    public String setSession(HttpSession session){
+            session.setAttribute("id",1);
+            session.setAttribute("name","Test");
+            return "Set_Session";
+    }
+
+    @RequestMapping(path="/session/get",method=RequestMethod.GET)
+    @ResponseBody//下面参数为httpServletResponse，由于响应要带上cookie
+    public String getSession(HttpSession session){
+        session.setAttribute("id",1);
+        session.setAttribute("name","Test");
+        return "get_Session";
     }
 }
