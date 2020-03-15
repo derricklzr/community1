@@ -164,4 +164,16 @@ public class AlphaController {
         session.setAttribute("name","Test");
         return "get_Session";
     }
+
+    //ajax示例,返回的是字符串
+    @RequestMapping(path="/ajax",method=RequestMethod.POST)
+    @ResponseBody
+    public String testAjax(String name,int age){
+       //测试接收的数据
+        System.out.println(name);
+       System.out.println(age);
+       //返回JSON给浏览器
+        return CommunityUtil.getJSONString(0,"成功收到服务端的JSON");
+    }
+
 }

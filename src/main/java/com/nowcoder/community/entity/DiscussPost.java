@@ -3,14 +3,20 @@ package com.nowcoder.community.entity;
 import java.util.Date;
 
 public class DiscussPost {
+
+
     private int id;
     private int userId;
     private String title;
+
+
+    private String content;
     private int type;
     private int status;
     private Date createTime;
     private int commentCount;
     private int score;
+
 
     @Override
     public String toString() {
@@ -18,6 +24,7 @@ public class DiscussPost {
                 "id=" + id +
                 ", userId=" + userId +
                 ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
                 ", type=" + type +
                 ", status=" + status +
                 ", createTime=" + createTime +
@@ -25,6 +32,15 @@ public class DiscussPost {
                 ", score=" + score +
                 '}';
     }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
 
     public int getId() {
         return id;

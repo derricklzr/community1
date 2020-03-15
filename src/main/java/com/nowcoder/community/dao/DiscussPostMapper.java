@@ -13,6 +13,11 @@ public interface DiscussPostMapper {
     //查询某个userId发了几个帖子，不输入则查总帖子
     //如果方法只有一个参数，并且在<if>里使用，则必须使用别名
     int selectDiscussPostRows(@Param("userId") int userId);
+   //增加帖子
+    int insertDiscussPost(DiscussPost discussPost);
+
+    //根据帖子id显示帖子的详情
+    DiscussPost selectDiscussPostById(int id);
 
 
 }

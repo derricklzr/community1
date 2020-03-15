@@ -1,5 +1,6 @@
 package com.nowcoder.community.controller;
 
+import com.nowcoder.community.annotation.LoginRequired;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.util.CommunityUtil;
@@ -44,6 +45,7 @@ public class UserController {
     @Autowired
     private HostHolder hostHolder;//从hostHolder取当前用户
 
+    @LoginRequired
     @RequestMapping(path = "/setting",method = RequestMethod.GET)
     public String getSettingPage(){
         return "/site/setting";
@@ -81,6 +83,7 @@ public class UserController {
     }
     //个人设置页面修改密码功能
     //这里形参用Model类和User类即可，SpringMVC会把传入内容按照User属性填入user
+    @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.POST)
     public String updatePassword(Model model, String password,String newPassword,String confirmPassword) {
        if(StringUtils.isBlank(password)){
@@ -116,6 +119,7 @@ public class UserController {
 
     }
 
+    @LoginRequired
     @RequestMapping(path="/upload",method = RequestMethod.POST)
     public String uploadHeader(MultipartFile headerImage, Model model){
         //形参为MultipartFile，用于接收图片
