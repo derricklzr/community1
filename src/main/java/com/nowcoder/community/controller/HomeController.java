@@ -1,9 +1,11 @@
 package com.nowcoder.community.controller;
 
+import com.nowcoder.community.entity.CommunityConstant;
 import com.nowcoder.community.entity.DiscussPost;
 import com.nowcoder.community.entity.Page;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.DiscussPostService;
+import com.nowcoder.community.service.LikeService;
 import com.nowcoder.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,12 +19,15 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class HomeController {
+public class HomeController implements CommunityConstant {
     @Autowired
     private DiscussPostService discussPostService;
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private LikeService likeService;
 
 
 
@@ -49,10 +54,20 @@ public class HomeController {
                 map.put("post",post);//装入post
                 User user = userService.findUserById(post.getUserId());//找出帖子对应的User信息
                 map.put("user",user);
+
+                //查帖子的赞数量
+                long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST,post.getId());
+                map.put("likeCount",likeCount);
+
                 discussPosts.add(map);
             }
         model.addAttribute("discussPosts",discussPosts);//把给页面展现的结果装到model
         return "/index";//返回的是模板的路径
     }
 
+    //服务器发生错误异常对应模板和页面
+    @RequestMapping(path = "/error",method = RequestMethod.GET)
+    public String getErrorPage(){
+        return "/error/500";
+    }
 }
