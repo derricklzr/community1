@@ -11,20 +11,37 @@ public interface MessageMapper {
     //letter代表会话里的一条私信信息
 
     //查询本用户当前页会话数据，针对每个会话只返回一条最新的私信
-    List<Message> selectConversations(int userId,int offset,int limit);
+    List<Message> selectConversations(int userId, int offset, int limit);
+
     //查询本用户会话总数量
     int selectConversationCount(int userId);
+
     //查看某个会话所包含的私信信息列表
-    List<Message> selectLetters(String conversationId,int offset,int limit);
+    List<Message> selectLetters(String conversationId, int offset, int limit);
+
     //查询某个会话所包含的私信信息数量
     int selectLetterCount(String conversationId);
+
     //某用户总未读私信消息+对于各用户的未读消息
-    int selectLetterUnreadCount(int userId,String conversationId);
+    int selectLetterUnreadCount(int userId, String conversationId);
 
     //增加一条私信
     int insertMessage(Message message);
 
     //修改消息的状态，例如未读消息设为已读，删除消息
-    int updateStatus(List<Integer> ids,int status);
+    int updateStatus(List<Integer> ids, int status);
 
+    //查询某个主题下最新的通知信息
+    Message selectLatestNotice(int userId, String topic);
+
+    //查询某个主题所包含的通知数量
+    int selectNoticeCount(int userId, String topic);
+
+    //查询未读的通知数量
+    int selectNoticeUnreadCount(int userId, String topic);
+
+    //查询某个主题所包含的通知列表
+    List<Message> selectNotices(int userId,String topic,int offset,int limit);
 }
+
+

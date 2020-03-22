@@ -32,6 +32,9 @@ public class ServiceLogAspect {
         //用户x在x时间，访问了x类的x方法
         //得到访问用户
         ServletRequestAttributes attributes =(ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if(attributes ==null){
+            return;
+        }
         HttpServletRequest request = attributes.getRequest();
         String ip = request.getRemoteHost();
         //得到访问时间

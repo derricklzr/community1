@@ -15,4 +15,16 @@ public interface CommunityConstant {
     int ENTITY_TYPE_POST=1;
     //实体类型：评论
     int ENTITY_TYPE_COMMENT=2;
+    //实体类型：用户
+    //实体类型：评论
+    int ENTITY_TYPE_USER=3;
+
+    //主题的评论
+    String TOPIC_COMMENT = "comment";
+    //主题的赞
+    String TOPIC_LIKE = "like";
+    //主题的关注
+    String TOPIC_FOLLOW = "follow";
+    //系统用户id
+    int SYSTEM_USER_ID = 1;
 }
