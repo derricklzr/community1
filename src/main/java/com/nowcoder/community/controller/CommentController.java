@@ -52,7 +52,16 @@ public class CommentController implements CommunityConstant {
             event.setEntityUserId(target.getUserId());
         }
         eventProducer.fireEvent(event);
+        if (comment.getEntityType()==ENTITY_TYPE_POST){
+            //对帖子进行回复后触发事件——给ES异步增加帖子
+             event = new Event()
+                    .setTopic(TOPIC_PUBLISH)
+                    .setUserId(comment.getUserId())
+                    .setEntityType(ENTITY_TYPE_POST)
+                    .setEntityId(discussPostId);
+            eventProducer.fireEvent(event);
 
+        }
 
         //重定向到当前帖子
         return "redirect:/discuss/detail/"+discussPostId;
