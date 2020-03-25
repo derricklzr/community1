@@ -59,4 +59,6 @@ public class LoginTicket {
     public void setExpired(Date expired) {
         this.expired = expired;
     }
+
+
 }

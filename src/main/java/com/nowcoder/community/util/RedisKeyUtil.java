@@ -15,6 +15,9 @@ public class RedisKeyUtil {
     private static final String PREFIX_KAPTCHA = "kaptcha";
     private static final String PREFIX_TICKET = "ticket";
     private static final String PREFIX_USER = "user";
+    private static final String PREFIX_UV = "uv";
+    private static final String PREFIX_DAU = "dau";
+
     //构建赞的数据结构：set
     //key:某个实体的赞名以 like:entity:entityType:entityId
     //value:对这个赞  点赞了的UserId
@@ -65,6 +68,23 @@ public class RedisKeyUtil {
     public static String getUserKey(int userId){
         return PREFIX_TICKET+SPLIT+userId;
 
+    }
+
+    //返回单日uv
+    public static String getUVKey(String date){
+        return PREFIX_UV+SPLIT+date;
+    }
+    //返回某段日期的的uv
+    public static String getUVKey(String startDate,String endDate){
+        return PREFIX_UV+SPLIT+startDate+SPLIT+endDate;
+    }
+    //返回某一天的dau
+    public static String getDAUKey(String date){
+        return PREFIX_DAU+SPLIT+date;
+    }
+    //返回某段日期的dau
+    public static String getDAUKey(String startDate,String endDate){
+        return PREFIX_DAU+SPLIT+startDate+SPLIT+endDate;
     }
 
 

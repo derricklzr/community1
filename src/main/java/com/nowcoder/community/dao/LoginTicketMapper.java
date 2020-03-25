@@ -24,7 +24,7 @@ public interface LoginTicketMapper {
     //通过ticket查询具体login_ticket数据
     @Select({
             "select id,user_id,ticket,status,expired ",
-            "from login_ticket where ticket=#{ticket}"
+            "from login_ticket where ticket=#{ticket} order by expired limit 0,1"
     })
     LoginTicket selectByTicker(String ticket);
     //输入ticket和状态参数，修改状态

@@ -1,10 +1,7 @@
 package com.nowcoder.community.config;
 
 import com.nowcoder.community.annotation.LoginRequired;
-import com.nowcoder.community.controller.interceptor.AlphaInterceptor;
-import com.nowcoder.community.controller.interceptor.LoginRequiredInterceptor;
-import com.nowcoder.community.controller.interceptor.LoginTicketInterceptor;
-import com.nowcoder.community.controller.interceptor.MessageInterceptor;
+import com.nowcoder.community.controller.interceptor.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -15,10 +12,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Autowired
     private AlphaInterceptor alphaInterceptor;
-
+/*
     @Autowired
     private LoginRequiredInterceptor loginRequiredInterceptor;
-
+*/
+    @Autowired
+    private DataInterceptor dataInterceptor;
     @Autowired
     private LoginTicketInterceptor loginTicketInterceptor;
 
@@ -39,12 +38,18 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 //不用排除的路径,一般排除静态资源
 
         //登录拦截器：拦截未登录用户访问需要登录才能访问的页面
-        registry.addInterceptor(loginRequiredInterceptor)
-                .excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg");
+    //    registry.addInterceptor(loginRequiredInterceptor)
+    //            .excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg");
+
         //不拦截静态资源
+
 
         //登录拦截器：拦截未登录用户访问需要登录才能访问的页面,未读消息
         registry.addInterceptor(messageInterceptor)
+                .excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg");
+        //不拦截静态资源
+        //登录拦截器：拦截未登录用户访问需要登录才能访问的页面,未读消息
+        registry.addInterceptor(dataInterceptor)
                 .excludePathPatterns("/**/*.css","/**/*.js","/**/*.png","/**/*.jpg","/**/*.jpeg");
         //不拦截静态资源
 

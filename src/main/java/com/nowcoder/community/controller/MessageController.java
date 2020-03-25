@@ -168,8 +168,9 @@ public class MessageController implements CommunityConstant {
         //查询评论通知
         Message message = messageService.findLatestNotice(user.getId(), TOPIC_COMMENT);
         //聚合数据
-        Map<String, Object> messageVO = new HashMap<>();
+
         if (message != null) {
+            Map<String, Object> messageVO = new HashMap<>();
             messageVO.put("message", message);
             String content = HtmlUtils.htmlUnescape(message.getContent());
             Map<String, Object> data = JSONObject.parseObject(content, HashMap.class);
@@ -182,16 +183,19 @@ public class MessageController implements CommunityConstant {
             messageVO.put("count", count);
             int unread = messageService.findNoticeUnreadCount(user.getId(), TOPIC_COMMENT);
             messageVO.put("unread", unread);
-
+            model.addAttribute("commentNotice", messageVO);
         }
-        model.addAttribute("commentNotice", messageVO);
+
         //查询点赞通知
 
         //查询评论通知
-        message = messageService.findLatestNotice(user.getId(), TOPIC_LIKE);
+
         //聚合数据
-        messageVO = new HashMap<>();
+
         if (message != null) {
+            Map<String, Object> messageVO = new HashMap<>();
+            message = messageService.findLatestNotice(user.getId(), TOPIC_LIKE);
+            messageVO = new HashMap<>();
             messageVO.put("message", message);
             String content = HtmlUtils.htmlUnescape(message.getContent());
             Map<String, Object> data = JSONObject.parseObject(content, HashMap.class);
@@ -204,15 +208,17 @@ public class MessageController implements CommunityConstant {
             messageVO.put("count", count);
             int unread = messageService.findNoticeUnreadCount(user.getId(), TOPIC_LIKE);
             messageVO.put("unread", unread);
-
+            model.addAttribute("likeNotice", messageVO);
         }
-        model.addAttribute("likeNotice", messageVO);
+
 
         //查询关注通知
         message = messageService.findLatestNotice(user.getId(), TOPIC_FOLLOW);
         //聚合数据
-        messageVO = new HashMap<>();
+
         if (message != null) {
+            Map<String, Object> messageVO = new HashMap<>();
+            messageVO = new HashMap<>();
             messageVO.put("message", message);
             String content = HtmlUtils.htmlUnescape(message.getContent());
             Map<String, Object> data = JSONObject.parseObject(content, HashMap.class);
@@ -225,9 +231,9 @@ public class MessageController implements CommunityConstant {
             messageVO.put("count", count);
             int unread = messageService.findNoticeUnreadCount(user.getId(), TOPIC_FOLLOW);
             messageVO.put("unread", unread);
-
+            model.addAttribute("followNotice", messageVO);
         }
-        model.addAttribute("followNotice", messageVO);
+
 
         //查询未读私信和系统消息数量
         int letterUnreadCount = messageService.findLetterUnreadCount(user.getId(), null);
