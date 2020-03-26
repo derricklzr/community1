@@ -28,8 +28,17 @@ public class DiscussPost {
     private Date createTime;
     @Field(type = FieldType.Integer)
     private int commentCount;
+
+    public double getScore() {
+        return score;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
+    }
+
     @Field(type = FieldType.Double)
-    private int score;
+    private double score;
 
 
     @Override
@@ -112,11 +121,5 @@ public class DiscussPost {
         this.commentCount = commentCount;
     }
 
-    public int getScore() {
-        return score;
-    }
 
-    public void setScore(int score) {
-        this.score = score;
-    }
 }
