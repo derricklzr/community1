@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,19 +34,20 @@ public class HomeController implements CommunityConstant {
 
     //下面为处理请求的方法，首页为路径为/index，这个方法响应的是网页不用写ResponseBody
     @RequestMapping(path = "/index",method = RequestMethod.GET)
-    public String getIndexPage(Model model, Page page)//通过model携带数据给模板，返回视图的名字
+    public String getIndexPage(Model model, Page page,
+                               @RequestParam(name = "orderMode",defaultValue = "0") int orderMode)//通过model携带数据给模板，返回视图的名字
     {
         //方法调用前，model和page对象生成，并且page注入model中
         //因此不用在model中add page，就可以在thymeleaf直接访问page的数据
         //总行数
         page.setRows(discussPostService.findDiscussPostRows(0));
         //当前页面访问路径
-        page.setPath("/index");
+        page.setPath("/index?orderMode="+orderMode);
 
 
 
         //查前十条数据
-        List<DiscussPost> list= discussPostService.findDiscussPost(0,page.getOffset(),page.getLimit());
+        List<DiscussPost> list= discussPostService.findDiscussPost(0,page.getOffset(),page.getLimit(),orderMode);
         //把每个DiscussPost的用户名通过UseId查出来
         List<Map<String,Object>> discussPosts = new ArrayList<>();//用于封装DiscussPost和User类的对象
         if(list!=null)//遍历
@@ -62,6 +64,7 @@ public class HomeController implements CommunityConstant {
                 discussPosts.add(map);
             }
         model.addAttribute("discussPosts",discussPosts);//把给页面展现的结果装到model
+        model.addAttribute("orderMode",orderMode);
         return "/index";//返回的是模板的路径
     }
 
