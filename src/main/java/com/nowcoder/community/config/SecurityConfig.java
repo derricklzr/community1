@@ -60,7 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                 .antMatchers(
                         //这是管理员和版主独立使用的功能
                         "/discuss/delete",
-                        "/data/**"
+                        "/data/**",
+                        "actuator/**"
 
 
 
