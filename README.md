@@ -5,8 +5,9 @@
 
 已登录时：社区发帖、点赞、回复功能；私信交互功能；系统通知功能；个人主页及设置功能；帖子搜索功能；用户权限管理功能等
 
-##未登录
-##社区首页
+## 未登录
+
+## 社区首页
 
 ![markdown](http://m.qpic.cn/psc?/V12P5Ftx2Qhc8x/FuOlPseFkXy6zf1*h9xoNi05ES*n8GfLkQPvB4*D*IimSmu9c5EvUrZ5u2TkGUmuQEg.ArDSps2WlTf6hP6ruh11RkGZoL1cCughsba1oY0!/b&bo=gAfuAwAAAAADF1g!&rf=viewer_4)
 
