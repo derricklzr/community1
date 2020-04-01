@@ -1,5 +1,5 @@
 # 仿知乎交友社区
-社区主要功能：项目基于SSM框架，使用 Spring Boot 搭建，使用到了Redis，Kafka,Elasticsearch等框架。核心功能为：
+社区主要功能：项目基于SSM框架，使用 Spring Boot 搭建，使用到了Redis，Kafka, Elasticsearch等框架。核心功能为：
 
 未登录时：登录注册功能；帖子搜索功能；查看帖子功能；
 
